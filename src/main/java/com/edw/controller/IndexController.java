@@ -7,6 +7,9 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 
 import com.edw.service.JwtService;
 import com.edw.service.KeycloakRestService;
+
+import org.keycloak.admin.client.Keycloak;
+import org.keycloak.admin.client.KeycloakBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,7 +105,23 @@ public class IndexController {
 
     @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
     public String login(String username, String password) {
-        return restService.login(username, password);
+
+    		Keycloak keycloak = KeycloakBuilder.builder()
+    				.serverUrl("https://keycloak-sso.apps.lab01.gpslab.club/auth")
+    				.realm("education")
+    				.username(username)
+    				.password(password)
+    				.clientId("jakarta-school")
+    				.clientSecret("01c71c74-6eb9-4a80-875b-63a189c5b5a3")
+    				.build();
+
+
+           return keycloak.tokenManager().getAccessToken().getToken();
+    }
+    
+    @PostMapping(value = "/prova", produces = MediaType.APPLICATION_JSON_VALUE)
+    public String prova(String username, String password) {
+        return username + password;
     }
 
     @PostMapping(value = "/logout", produces = MediaType.APPLICATION_JSON_VALUE)
